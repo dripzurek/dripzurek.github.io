@@ -21,7 +21,7 @@ function showContents(contents, path) {
         .filter(item => item.name !== 'index.html')
         .forEach(item => fileList.appendChild(createListItem(item)));
     
-    navButtons.style.display = path === '' ? 'none' : 'flex';
+    toggleNavButtonsDisplay(path);
 }
 
 function createListItem(item) {
@@ -51,10 +51,17 @@ function handleLinkClick(event, item) {
     getRepoContents(path);
 }
 
+function toggleNavButtonsDisplay(path) {
+    navButtons.style.display = path === '' ? 'none' : 'flex';
+}
+
 function goToHome() {
     const previousPath = historyStack.pop() || '';
-    updateUrl(previousPath);
-    getRepoContents(previousPath);
+    
+    if (previousPath !== '') {
+        updateUrl(previousPath);
+        getRepoContents(previousPath);
+    }
 }
 
 function updateUrl(path) {
