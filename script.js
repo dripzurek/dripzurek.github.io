@@ -22,8 +22,9 @@ function showContents(contents, path) {
 
     const excludedFiles = ['index.html', 'styles.css', 'script.js'];
 
-    contents.forEach(item => {
-        if (!excludedFiles.includes(item.name)) {
+    contents
+        .filter(item => !excludedFiles.includes(item.name))
+        .forEach(item => {
             const listItem = document.createElement('li');
             const link = document.createElement('a');
 
@@ -44,26 +45,12 @@ function showContents(contents, path) {
             link.textContent = item.name;
             listItem.appendChild(link);
             fileList.appendChild(listItem);
-        }
-    });
+        });
 
     navButtons.style.display = path === '' ? 'none' : 'flex';
 }
 
-function goToHome() {
-    if (historyStack.length > 0) {
-        const previousPath = historyStack.pop();
-        updateUrl(previousPath);
-        getRepoContents(previousPath);
-    } else {
-        updateUrl('');
-        getRepoContents('');
-    }
-}
-
-function updateUrl(path) {
-    history.pushState({ path: path }, null, path ? `?path=${path}` : window.location.pathname);
-}
+// Resto del código de los botones sin modificaciones
 
 // Load initial contents
 getRepoContents('');
