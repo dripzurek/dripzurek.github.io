@@ -11,6 +11,7 @@ async function getRepoContents(path) {
     try {
         const response = await fetch(`https://api.github.com/repos/dripzurek/dripzurek.github.io/contents/${path}`);
         const data = await response.json();
+        console.log('Respuesta de la API:', data);
         showContents(data, path);
     } catch (error) {
         console.error('Error al obtener la lista de archivos:', error);
@@ -21,7 +22,11 @@ function showContents(contents, path) {
     fileList.innerHTML = '';
 
     contents.forEach(item => {
-        if (item.name === 'index.html' || item.name === 'script.js' || item.name === 'styles.css') {
+        // Convertir el nombre del archivo a minúsculas para evitar problemas de mayúsculas/minúsculas
+        const itemNameLowerCase = item.name.toLowerCase();
+
+        // Omitir archivos específicos
+        if (itemNameLowerCase === 'index.html' || itemNameLowerCase === 'script.js' || itemNameLowerCase === 'styles.css') {
             const listItem = document.createElement('li');
             const link = document.createElement('a');
 
@@ -45,7 +50,8 @@ function showContents(contents, path) {
         }
     });
 
-    navButtons.style.display = path === '' ? 'none' : 'flex';
+    // Mostrar u ocultar el botón "Inicio" según si estás en el inicio o dentro de una carpeta
+    navButtons.style.display = historyStack.length > 0 ? 'flex' : 'none';
 }
 
 function goToHome() {
@@ -54,6 +60,10 @@ function goToHome() {
         updateUrl(previousPath);
         getRepoContents(previousPath);
     } else {
+        const currentPath = location.search.replace('?path=', '');
+        if (currentPath !== '') {
+            historyStack.push(currentPath);
+        }
         updateUrl('');
         getRepoContents('');
     }
@@ -63,5 +73,5 @@ function updateUrl(path) {
     history.pushState({ path: path }, null, path ? `?path=${path}` : window.location.pathname);
 }
 
-// Load initial contents
+// Cargar contenidos iniciales
 getRepoContents('');
