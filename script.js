@@ -21,7 +21,7 @@ function showContents(contents, path) {
     fileList.innerHTML = '';
 
     contents.forEach(item => {
-        if (item.name !== 'index.html') {
+        if (item.name === 'index.html' || item.name === 'script.js' || item.name === 'styles.css') {
             const listItem = document.createElement('li');
             const link = document.createElement('a');
 
