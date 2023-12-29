@@ -21,31 +21,28 @@ function showContents(contents, path) {
     fileList.innerHTML = '';
 
     contents.forEach(item => {
-        // Omitir archivos específicos
-        if (['index.html', 'styles.css', 'script.js'].includes(item.name)) {
-            return;
+        if (item.name !== 'index.html') {
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+
+            if (item.type === 'file') {
+                link.href = item.download_url;
+                link.setAttribute('download', item.name);
+            } else if (item.type === 'dir') {
+                link.classList.add('folder-icon');
+                link.href = '#';
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    historyStack.push(path);
+                    updateUrl(item.path);
+                    getRepoContents(item.path);
+                });
+            }
+
+            link.textContent = item.name;
+            listItem.appendChild(link);
+            fileList.appendChild(listItem);
         }
-
-        const listItem = document.createElement('li');
-        const link = document.createElement('a');
-
-        if (item.type === 'file') {
-            link.href = item.download_url;
-            link.setAttribute('download', item.name);
-        } else if (item.type === 'dir') {
-            link.classList.add('folder-icon');
-            link.href = '#';
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                historyStack.push(path);
-                updateUrl(item.path);
-                getRepoContents(item.path);
-            });
-        }
-
-        link.textContent = item.name;
-        listItem.appendChild(link);
-        fileList.appendChild(listItem);
     });
 
     navButtons.style.display = path === '' ? 'none' : 'flex';
@@ -66,5 +63,5 @@ function updateUrl(path) {
     history.pushState({ path: path }, null, path ? `?path=${path}` : window.location.pathname);
 }
 
-// Cargar contenido inicial
+// Load initial contents
 getRepoContents('');
