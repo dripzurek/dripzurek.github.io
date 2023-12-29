@@ -1,6 +1,9 @@
 // URL del repositorio en GitHub
 const repoUrl = 'https://api.github.com/repos/DirectoryLister/DirectoryLister/contents/';
 
+// Elemento del botón de inicio
+const inicioButton = document.getElementById('inicio-button');
+
 // Elemento del botón de navegación
 const navButtons = document.getElementById('nav-buttons');
 
@@ -12,6 +15,12 @@ const historyStack = [];
 
 // Manejar el evento 'popstate' (cambio en el historial)
 window.addEventListener('popstate', handlePopState);
+
+// Asignar evento de clic al botón de inicio
+inicioButton.addEventListener('click', async () => {
+    const path = getCurrentPath();
+    await getRepoContents(path);
+});
 
 // Iniciar la aplicación
 init();
