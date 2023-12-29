@@ -9,7 +9,7 @@ window.addEventListener('popstate', (event) => {
 
 async function getRepoContents(path) {
     try {
-        const response = await fetch(`https://api.github.com/repos/dripzurek/dripzurek.github.io/contents/${path}`);
+        const response = await fetch(`https://api.github.com/repos/DirectoryLister/DirectoryLister/contents/${path}`);
         const data = await response.json();
         showContents(data, path);
     } catch (error) {
