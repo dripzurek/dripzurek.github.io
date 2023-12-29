@@ -22,9 +22,8 @@ function showContents(contents, path) {
 
     const excludedFiles = ['index.html', 'styles.css', 'script.js'];
 
-    contents
-        .filter(item => !excludedFiles.includes(item.name))
-        .forEach(item => {
+    contents.forEach(item => {
+        if (!excludedFiles.includes(item.name)) {
             const listItem = document.createElement('li');
             const link = document.createElement('a');
 
@@ -45,12 +44,26 @@ function showContents(contents, path) {
             link.textContent = item.name;
             listItem.appendChild(link);
             fileList.appendChild(listItem);
-        });
+        }
+    });
 
     navButtons.style.display = path === '' ? 'none' : 'flex';
 }
 
-// Resto del código de los botones sin modificaciones
+function goToHome() {
+    if (historyStack.length > 0) {
+        const previousPath = historyStack.pop();
+        updateUrl(previousPath);
+        getRepoContents(previousPath);
+    } else {
+        updateUrl('');
+        getRepoContents('');
+    }
+}
+
+function updateUrl(path) {
+    history.pushState({ path: path }, null, path ? `?path=${path}` : window.location.pathname);
+}
 
 // Load initial contents
 getRepoContents('');
