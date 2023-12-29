@@ -13,44 +13,52 @@ const historyStack = [];
 // Manejar el evento 'popstate' (cambio en el historial)
 window.addEventListener('popstate', handlePopState);
 
-// Función asincrónica para obtener el contenido del repositorio
+// Iniciar la aplicación
+init();
+
+// Inicialización de la aplicación
+async function init() {
+    const path = getCurrentPath();
+    await getRepoContents(path);
+}
+
+// Obtener el contenido del repositorio
 async function getRepoContents(path) {
     try {
-        const response = await fetch(`${repoUrl}${path}`);
-        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-        
-        const data = await response.json();
-        showContents(data, path);
+        const data = await fetchData(path);
+        showContents(data);
     } catch (error) {
         console.error('Error al obtener la lista de archivos:', error.message);
     }
 }
 
+// Obtener datos de la API
+async function fetchData(path) {
+    const response = await fetch(`${repoUrl}${path}`);
+    if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+    return response.json();
+}
+
 // Mostrar el contenido en la interfaz
-function showContents(contents, path) {
+function showContents(contents) {
     clearFileList();
-    
     contents.forEach(item => {
-        if (isExcludedFile(item.name)) return;
-
-        const listItem = createListItem(item);
-        fileList.appendChild(listItem);
+        if (!isExcludedFile(item.name)) {
+            fileList.appendChild(createListItem(item));
+        }
     });
-
-    updateNavButtonsVisibility(path);
+    updateNavButtonsVisibility();
 }
 
 // Crear un elemento de lista para un archivo o carpeta
 function createListItem(item) {
     const listItem = document.createElement('li');
     const link = document.createElement('a');
-
     if (item.type === 'file') {
         setupFileLink(link, item);
     } else if (item.type === 'dir') {
         setupFolderLink(link, item);
     }
-
     link.textContent = item.name;
     listItem.appendChild(link);
     return listItem;
@@ -74,9 +82,15 @@ function setupFolderLink(link, item) {
 
 // Manejar el clic en una carpeta
 function handleFolderClick(path) {
-    historyStack.push(history.state ? history.state.path : '');
+    historyStack.push(getCurrentPath());
     updateUrl(path);
     getRepoContents(path);
+}
+
+// Obtener el camino actual de la URL
+function getCurrentPath() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('path') || '';
 }
 
 // Verificar si un archivo debe excluirse de la lista
@@ -85,8 +99,8 @@ function isExcludedFile(fileName) {
 }
 
 // Actualizar la visibilidad de los botones de navegación
-function updateNavButtonsVisibility(path) {
-    navButtons.style.display = path === '' ? 'none' : 'flex';
+function updateNavButtonsVisibility() {
+    navButtons.style.display = getCurrentPath() === '' ? 'none' : 'flex';
 }
 
 // Limpiar la lista de archivos
@@ -95,16 +109,13 @@ function clearFileList() {
 }
 
 // Manejar cambios en el historial de navegación
-function handlePopState(event) {
-    const path = event.state ? event.state.path : '';
+function handlePopState() {
+    const path = getCurrentPath();
     getRepoContents(path);
 }
 
 // Actualizar la URL y el historial de navegación
 function updateUrl(path) {
     const newPath = path ? `?path=${path}` : window.location.pathname;
-    history.pushState({ path: path }, null, newPath);
+    history.pushState({ path }, null, newPath);
 }
-
-// Cargar contenido inicial
-getRepoContents('');
