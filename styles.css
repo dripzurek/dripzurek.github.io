@@ -1,4 +1,4 @@
-/* Estilos generales del cuerpo de la página */
+/* Estilo general del cuerpo de la página */
 body {
     font-family: 'Arial', sans-serif;
     background-image: none;
@@ -8,38 +8,39 @@ body {
     padding: 20px;
 }
 
-/* Estilos de la lista de archivos */
+/* Estilo de la lista de archivos */
 #file-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-/* Estilos de cada elemento de la lista */
+/* Estilo de cada elemento de la lista */
 li {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 0;
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
 
-/* Estilos de los enlaces */
+/* Estilo de los enlaces */
 a {
     color: #333;
     text-decoration: none;
     font-size: 16px;
 }
 
-/* Estilos del ícono de carpeta */
+/* Estilo del icono de carpeta */
 .folder-icon::before {
-    content: '\1F4C1'; /* Código Unicode para el ícono de carpeta */
+    content: '\1F4C1';
     font-size: 20px;
     margin-right: 10px;
     color: #4285f4;
 }
 
-/* Estilos del contenido de la carpeta */
+/* Estilo del contenido de la carpeta (oculto por defecto) */
 .folder-content {
     list-style: none;
     padding-left: 20px;
@@ -47,14 +48,14 @@ a {
     margin: 0;
 }
 
-/* Estilos de los botones de navegación */
+/* Estilo de los botones de navegación */
 #nav-buttons {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
 }
 
-/* Estilos de cada botón de navegación */
+/* Estilo de cada botón de navegación */
 .nav-button {
     display: flex;
     align-items: center;
@@ -65,7 +66,7 @@ a {
     user-select: none;
 }
 
-/* Estilos del ícono dentro de los botones de navegación */
+/* Estilo del icono dentro de los botones de navegación */
 .nav-button i {
     font-size: 16px;
     margin-right: 5px;
