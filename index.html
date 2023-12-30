@@ -1,19 +1,30 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Definición del conjunto de caracteres y configuración de la vista -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tu Página</title>
+
+    <!-- Enlace a la hoja de estilos local -->
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Enlace a la biblioteca de iconos Material Design de Google -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body>
+    <!-- Contenedor de botones de navegación -->
     <div id="nav-buttons">
+        <!-- Botón de inicio con icono y función asociada -->
         <div class="nav-button" id="home-button" onclick="goToHome()">
             <i class="material-icons">subdirectory_arrow_left</i> Inicio
         </div>
     </div>
+
+    <!-- Lista de archivos -->
     <ul id="file-list"></ul>
+
+    <!-- Inclusión del archivo de script -->
     <script src="script.js"></script>
 </body>
 </html>
