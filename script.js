@@ -12,8 +12,16 @@ async function getRepoContents(path) {
         // Obtener datos del repositorio mediante la API de GitHub
         const response = await fetch(`https://api.github.com/repos/DirectoryLister/DirectoryLister/contents/${path}`);
         const data = await response.json();
+        // Agregar información adicional a la estructura de datos si está disponible en la API
+        const contentsWithData = data.map(item => {
+            return {
+                ...item,
+                size: item.size, // Ajusta esto según la estructura real de la respuesta de la API
+                last_modified: item.last_modified // Ajusta esto según la estructura real de la respuesta de la API
+            };
+        });
         // Mostrar los contenidos obtenidos
-        showContents(data, path);
+        showContents(contentsWithData, path);
     } catch (error) {
         console.error('Error al obtener la lista de archivos:', error);
     }
@@ -36,6 +44,8 @@ function showContents(contents, path) {
             // Configurar el enlace según el tipo de archivo
             if (item.type === 'file') {
                 setupFileLink(link, item);
+                // Agregar tamaño y hora de modificación al título del enlace
+                link.title = `Size: ${formatFileSize(item.size)} | Last Modified: ${formatDate(item.last_modified)}`;
             } else if (item.type === 'dir') {
                 setupFolderLink(link, item, path);
             }
@@ -94,6 +104,19 @@ function updateUrl(path) {
 // Actualizar la visualización de los botones de navegación
 function updateNavButtonsDisplay(path) {
     navButtons.style.display = path === '' ? 'none' : 'flex';
+}
+
+// Función para formatear el tamaño del archivo
+function formatFileSize(sizeInBytes) {
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(sizeInBytes) / Math.log(1024));
+    return `${(sizeInBytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
+}
+
+// Función para formatear la fecha
+function formatDate(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString(); // Puedes personalizar el formato según tus preferencias
 }
 
 // Cargar el contenido inicial del repositorio
