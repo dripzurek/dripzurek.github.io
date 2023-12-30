@@ -36,6 +36,8 @@ function showContents(contents, path) {
             // Configurar el enlace según el tipo de archivo
             if (item.type === 'file') {
                 setupFileLink(link, item);
+                // Agregar tamaño y hora de modificación al título del enlace
+                link.title = `Size: ${formatFileSize(item.size)} | Last Modified: ${formatDate(item.last_modified)}`;
             } else if (item.type === 'dir') {
                 setupFolderLink(link, item, path);
             }
