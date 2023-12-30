@@ -30,11 +30,6 @@ function showContents(contents, path) {
             if (item.type === 'file') {
                 link.href = item.download_url;
                 link.setAttribute('download', item.name);
-
-                const fileTypeIcon = getFileTypeIcon(item.name);
-                if (fileTypeIcon) {
-                    link.classList.add(fileTypeIcon);
-                }
             } else if (item.type === 'dir') {
                 link.classList.add('folder-icon');
                 link.href = '#';
@@ -53,22 +48,6 @@ function showContents(contents, path) {
     });
 
     navButtons.style.display = path === '' ? 'none' : 'flex';
-}
-
-function getFileTypeIcon(fileName) {
-    const fileExtension = fileName.split('.').pop().toLowerCase();
-
-    switch (fileExtension) {
-        case 'jpg':
-        case 'jpeg':
-        case 'png':
-            return 'image-icon';
-        case 'pdf':
-            return 'pdf-icon';
-        // Agrega más casos según sea necesario para otros tipos de archivo
-        default:
-            return null;
-    }
 }
 
 function goToHome() {
