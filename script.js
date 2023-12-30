@@ -1,10 +1,12 @@
 // Elementos del DOM
 const navButtons = document.getElementById('nav-buttons');
 const fileList = document.getElementById('file-list');
-const historyStack = [];
 
 // Evento para manejar el cambio de historial del navegador
 window.addEventListener('popstate', handlePopState);
+
+// Delegación de evento click en el contenedor de archivos
+fileList.addEventListener('click', handleFileListClick);
 
 // Función principal para obtener y mostrar el contenido del repositorio
 async function getRepoContents(path) {
@@ -51,23 +53,24 @@ function showContents(contents, path) {
     updateNavButtonsDisplay(path);
 }
 
-// Configurar el enlace para archivos
-function setupFileLink(link, item) {
-    link.href = item.download_url;
-    link.setAttribute('download', item.name);
+// Función para manejar clics en el contenedor de archivos
+function handleFileListClick(event) {
+    const targetLink = event.target.closest('a');
+    if (targetLink) {
+        event.preventDefault();
+        const item = getItemFromLink(targetLink);
+        if (item) {
+            updateUrl(item.path);
+            getRepoContents(item.path);
+        }
+    }
 }
 
-// Configurar el enlace para carpetas
-function setupFolderLink(link, item, path) {
-    link.classList.add('folder-icon');
-    link.href = '#';
-    link.addEventListener('click', (event) => {
-        // Evitar la acción predeterminada, agregar al historial y obtener el contenido de la carpeta
-        event.preventDefault();
-        historyStack.push(path);
-        updateUrl(item.path);
-        getRepoContents(item.path);
-    });
+// Obtener el objeto de elemento desde el enlace
+function getItemFromLink(link) {
+    const listItem = link.closest('li');
+    const index = Array.from(listItem.parentElement.children).indexOf(listItem);
+    return contents[index];
 }
 
 // Manejar el evento de cambio en el historial del navegador
@@ -80,7 +83,7 @@ function handlePopState(event) {
 // Ir a la ubicación principal (home) según el historial
 function goToHome() {
     // Obtener la ubicación anterior del historial o establecerla como vacía
-    const previousPath = historyStack.pop() || '';
+    const previousPath = history.state ? history.state.path : '';
     // Actualizar la URL y obtener el contenido correspondiente
     updateUrl(previousPath);
     getRepoContents(previousPath);
@@ -88,7 +91,7 @@ function goToHome() {
 
 // Actualizar la URL del navegador
 function updateUrl(path) {
-    history.pushState({ path: path }, null, path ? `?path=${path}` : window.location.pathname);
+    history.replaceState({ path: path }, null, path ? `?path=${path}` : window.location.pathname);
 }
 
 // Actualizar la visualización de los botones de navegación
