@@ -1,30 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Definición del conjunto de caracteres y configuración de la vista -->
+    <!-- Configuración del documento -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título de la página -->
     <title>Tu Página</title>
-
     <!-- Enlace a la hoja de estilos local -->
     <link rel="stylesheet" href="styles.css">
-
-    <!-- Enlace a la biblioteca de iconos Material Design de Google -->
+    <!-- Enlace a la hoja de estilos de Material Icons desde Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 <body>
-    <!-- Contenedor de botones de navegación -->
+    <!-- Barra de navegación con botón de inicio -->
     <div id="nav-buttons">
-        <!-- Botón de inicio con icono y función asociada -->
-        <div class="nav-button" id="home-button" onclick="goToHome()">
+        <div class="nav-button" id="home-button">
+            <!-- Icono de Material Icons para el botón de inicio -->
             <i class="material-icons">subdirectory_arrow_left</i> Inicio
         </div>
     </div>
-
-    <!-- Lista de archivos -->
+    <!-- Lista no ordenada para mostrar la lista de archivos -->
     <ul id="file-list"></ul>
-
-    <!-- Inclusión del archivo de script -->
+    <!-- Script de JavaScript para la funcionalidad de la página -->
     <script src="script.js"></script>
+    <!-- Asignar evento desde el script -->
+    <script>
+        document.getElementById('home-button').addEventListener('click', goToHome);
+    </script>
 </body>
 </html>
