@@ -11,11 +11,12 @@ async function getRepoContents(path) {
         showContents(data, path);
     } catch (error) {
         console.error('Error al obtener la lista de archivos:', error);
+        // Puedes manejar el error de manera más específica aquí
     }
 }
 
 function handlePopState(event) {
-    const path = event.state ? event.state.path : '';
+    const { path = '' } = event.state || {};
     getRepoContents(path);
 }
 
@@ -43,9 +44,9 @@ function showContents(contents, path) {
     navButtons.style.display = path === '' ? 'none' : 'flex';
 }
 
-function setFileLinkAttributes(link, item) {
-    link.href = item.download_url;
-    link.setAttribute('download', item.name);
+function setFileLinkAttributes(link, { download_url, name }) {
+    link.href = download_url;
+    link.setAttribute('download', name);
 }
 
 function setDirectoryLinkAttributes(link, item, path) {
@@ -67,7 +68,7 @@ function goToHome() {
 
 function updateUrl(path) {
     const newPath = path ? `?path=${path}` : window.location.pathname;
-    history.pushState({ path: path }, null, newPath);
+    history.pushState({ path }, null, newPath);
 }
 
 // Cargar contenido inicial
