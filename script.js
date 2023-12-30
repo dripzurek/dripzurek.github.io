@@ -2,10 +2,7 @@ const navButtons = document.getElementById('nav-buttons');
 const fileList = document.getElementById('file-list');
 const historyStack = [];
 
-window.addEventListener('popstate', (event) => {
-    const path = event.state ? event.state.path : '';
-    getRepoContents(path);
-});
+window.addEventListener('popstate', handlePopState);
 
 async function getRepoContents(path) {
     try {
@@ -17,9 +14,13 @@ async function getRepoContents(path) {
     }
 }
 
+function handlePopState(event) {
+    const path = event.state ? event.state.path : '';
+    getRepoContents(path);
+}
+
 function showContents(contents, path) {
     fileList.innerHTML = '';
-
     const excludedFiles = ['index.html', 'styles.css', 'script.js'];
 
     contents.forEach(item => {
@@ -28,17 +29,9 @@ function showContents(contents, path) {
             const link = document.createElement('a');
 
             if (item.type === 'file') {
-                link.href = item.download_url;
-                link.setAttribute('download', item.name);
+                setFileLinkAttributes(link, item);
             } else if (item.type === 'dir') {
-                link.classList.add('folder-icon');
-                link.href = '#';
-                link.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    historyStack.push(path);
-                    updateUrl(item.path);
-                    getRepoContents(item.path);
-                });
+                setDirectoryLinkAttributes(link, item, path);
             }
 
             link.textContent = item.name;
@@ -50,20 +43,32 @@ function showContents(contents, path) {
     navButtons.style.display = path === '' ? 'none' : 'flex';
 }
 
+function setFileLinkAttributes(link, item) {
+    link.href = item.download_url;
+    link.setAttribute('download', item.name);
+}
+
+function setDirectoryLinkAttributes(link, item, path) {
+    link.classList.add('folder-icon');
+    link.href = '#';
+    link.addEventListener('click', (event) => {
+        event.preventDefault();
+        historyStack.push(path);
+        updateUrl(item.path);
+        getRepoContents(item.path);
+    });
+}
+
 function goToHome() {
-    if (historyStack.length > 0) {
-        const previousPath = historyStack.pop();
-        updateUrl(previousPath);
-        getRepoContents(previousPath);
-    } else {
-        updateUrl('');
-        getRepoContents('');
-    }
+    const previousPath = historyStack.pop() || '';
+    updateUrl(previousPath);
+    getRepoContents(previousPath);
 }
 
 function updateUrl(path) {
-    history.pushState({ path: path }, null, path ? `?path=${path}` : window.location.pathname);
+    const newPath = path ? `?path=${path}` : window.location.pathname;
+    history.pushState({ path: path }, null, newPath);
 }
 
-// Load initial contents
+// Cargar contenido inicial
 getRepoContents('');
