@@ -2,7 +2,7 @@ const navButtons = document.getElementById('nav-buttons');
 const fileList = document.getElementById('file-list');
 const historyStack = [];
 
-window.addEventListener('popstate', handlePopstate);
+window.addEventListener('popstate', handlePopState);
 
 async function getRepoContents(path) {
     try {
@@ -26,24 +26,24 @@ function showContents(contents, path) {
             if (item.type === 'file') {
                 setupFileLink(link, item);
             } else if (item.type === 'dir') {
-                setupFolderLink(link, item);
+                setupFolderLink(link, item, path);
             }
 
+            link.textContent = item.name;
             listItem.appendChild(link);
             fileList.appendChild(listItem);
         }
     });
 
-    updateNavButtonsVisibility(path);
+    updateNavButtonsDisplay(path);
 }
 
 function setupFileLink(link, item) {
     link.href = item.download_url;
     link.setAttribute('download', item.name);
-    link.textContent = item.name;
 }
 
-function setupFolderLink(link, item) {
+function setupFolderLink(link, item, path) {
     link.classList.add('folder-icon');
     link.href = '#';
     link.addEventListener('click', (event) => {
@@ -52,15 +52,9 @@ function setupFolderLink(link, item) {
         updateUrl(item.path);
         getRepoContents(item.path);
     });
-
-    link.textContent = item.name;
 }
 
-function updateNavButtonsVisibility(path) {
-    navButtons.style.display = path === '' ? 'none' : 'flex';
-}
-
-function handlePopstate(event) {
+function handlePopState(event) {
     const path = event.state ? event.state.path : '';
     getRepoContents(path);
 }
@@ -73,6 +67,10 @@ function goToHome() {
 
 function updateUrl(path) {
     history.pushState({ path: path }, null, path ? `?path=${path}` : window.location.pathname);
+}
+
+function updateNavButtonsDisplay(path) {
+    navButtons.style.display = path === '' ? 'none' : 'flex';
 }
 
 // Load initial contents
